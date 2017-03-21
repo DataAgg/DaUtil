@@ -1,0 +1,64 @@
+plugins {
+	id 'java'
+	id 'eclipse'
+	id 'idea'
+	id 'maven'
+	id 'signing'
+	id 'maven-publish'
+	id 'com.jfrog.bintray' version '1.7.3'
+	id 'com.github.ben-manes.versions' version '0.14.0'
+}
+
+group = 'io.github.dataagg'
+version = '1.2'
+description = """DataAgg DaUtil"""
+archivesBaseName = 'DaUtil'
+apply from: './bintray.gradle'
+
+dependencies {
+	compile 'org.slf4j:slf4j-api:1.7.25'
+	compile 'org.jodd:jodd-core:3.8.1'
+	compile 'org.jodd:jodd-bean:3.8.1'
+	compile 'org.jodd:jodd-props:3.8.1'
+	compile 'com.google.code.gson:gson:2.8.0'
+	testCompile 'org.slf4j:slf4j-log4j12:1.7.25'
+	testCompile 'org.slf4j:jcl-over-slf4j:1.7.25'
+	testCompile 'org.slf4j:jul-to-slf4j:1.7.25'
+	testCompile 'junit:junit:4.12'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+	options.encoding = "UTF-8"
+}
+
+repositories {
+	mavenLocal()
+	maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+	//mavenCentral()
+	jcenter()
+}
+
+idea {
+	project {
+		languageLevel = '1.8'
+		ipr {
+			withXml { provider ->
+				provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+			}
+		}
+	}
+	module {
+		inheritOutputDirs = false
+		outputDir = file("$buildDir/classes/main/")
+		testOutputDir = file("$buildDir/classes/test/")
+	}
+}
+
+configurations {
+	published
+}
